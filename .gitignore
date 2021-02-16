@@ -1,0 +1,6 @@
+# IntelliJ workspace
+.idea/
+*.iml
+
+# Maven
+target/
