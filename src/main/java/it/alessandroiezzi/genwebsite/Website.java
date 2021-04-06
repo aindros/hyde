@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Website {
+    @Getter private List<Dir> includes;
     @Getter private String rootDir;
     @Setter private String pagesDir;
     @Getter @Setter private String template;
