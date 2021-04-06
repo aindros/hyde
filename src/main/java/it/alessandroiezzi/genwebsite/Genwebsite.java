@@ -80,11 +80,14 @@ public class Genwebsite {
                 Map<String, Object> data = new HashMap<>();
                 data.put("title", page.getTitle());
                 data.put("content", page.parse());
+                data.put(page.getId() + "Active", "class=\"active\"");
 
                 // Console output
+                /*
                 Writer out = new OutputStreamWriter(System.out);
                 template.process(data, out);
                 out.flush();
+                 */
 
                 File pageFile = Paths.get(outDir.getAbsolutePath()).resolve(page.getOut()).toFile();
                 pageFile.getParentFile().mkdirs();
