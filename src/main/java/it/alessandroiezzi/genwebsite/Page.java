@@ -36,6 +36,7 @@ public class Page {
     @Getter @Setter private String in = "";
     @Getter @Setter private String template = "";
     @Getter @Setter private String title = "";
+    @Getter @Setter private String id = "";
 
     public String parse() throws IOException {
         if (content != null && !content.isEmpty()) {
@@ -43,16 +44,16 @@ public class Page {
         } else if (in != null && !in.isEmpty() && !in.trim().isEmpty()) {
             String[] splited = in.split("\\.");
             String extension = splited[splited.length - 1];
+
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = Files.newBufferedReader(Paths.get(rootDir).resolve(in));
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+
             switch (extension) {
                 case "md":
-                    StringBuilder sb = new StringBuilder();
-                    BufferedReader br = Files.newBufferedReader(Paths.get(rootDir).resolve(in));
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line).append("\n");
-                    }
-
-
                     MutableDataSet options = new MutableDataSet();
 
                     // uncomment to set optional extensions
@@ -68,6 +69,10 @@ public class Page {
                     Node document = parser.parse(sb.toString());
 
                     return renderer.render(document);
+                case "html":
+                case "htm":
+                case "xhtm":
+                  return sb.toString();
             }
         }
 
