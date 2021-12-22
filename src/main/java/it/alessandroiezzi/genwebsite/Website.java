@@ -24,13 +24,16 @@ import org.apache.commons.lang3.StringUtils;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Website {
-    @Getter private List<Dir> includes;
+    @Getter private List<Dir> includes = new ArrayList<>();
     @Getter private String rootDir;
     @Setter private String pagesDir;
     @Getter @Setter private String template;
     @Getter @Setter private List<Page> pages = new ArrayList<>();
+    @Getter private Map<String, String> globals = new HashMap<>();
 
     public void setRootDir(String rootDir) {
         this.pages.forEach(p -> {

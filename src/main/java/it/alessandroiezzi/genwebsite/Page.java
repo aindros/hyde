@@ -33,15 +33,43 @@ public class Page {
     @Setter private String rootDir = "";
     @Getter @Setter private String out = "";
     @Getter @Setter private String content = "";
-    @Getter @Setter private String in = "";
+    @Getter private String in = "";
     @Getter @Setter private String template = "";
-    @Getter @Setter private String title = "";
+    @Setter private String title = "";
     @Getter @Setter private String id = "";
+    @Getter @Setter private String dir = "";
+    @Getter private boolean parsed = false;
+    @Getter private String date;
+
+    public Page() {
+        date = new String("");
+    }
+
+    public String getTitle() {
+        if (!parsed) {
+            throw new RuntimeException("You must call parse before getTitle");
+        }
+
+        System.out.println("Page title: " + title);
+
+        return title;
+    }
+
+    public void setIn(String in) {
+        parsed = false;
+        this.in = in;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+        System.out.println("-------------------> " + date);
+    }
 
     public String parse() throws IOException {
-        if (content != null && !content.isEmpty()) {
+        if (parsed)
             return content;
-        } else if (in != null && !in.isEmpty() && !in.trim().isEmpty()) {
+
+        if (in != null && !in.isEmpty() && !in.trim().isEmpty()) {
             String[] splited = in.split("\\.");
             String extension = splited[splited.length - 1];
 
@@ -49,11 +77,27 @@ public class Page {
             BufferedReader br = Files.newBufferedReader(Paths.get(rootDir).resolve(in));
             String line;
             while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
+                if (line.startsWith("# property:")) {
+                    String property = line.replace("# property:", "");
+                    String[] splitted = property.split("=");
+                    if (splitted.length > 1) {
+                        switch(splitted[0].trim()) {
+                            case "title":
+                                title = splitted[1].trim();
+                                break;
+                            case "date":
+                                date = splitted[1].trim();
+                                break;
+                        }
+                    }
+                } else {
+                    sb.append(line).append("\n");
+                }
             }
 
             switch (extension) {
                 case "md":
+                    System.out.println("Parsing markdown");
                     MutableDataSet options = new MutableDataSet();
 
                     // uncomment to set optional extensions
@@ -68,14 +112,18 @@ public class Page {
                     // You can re-use parser and renderer instances
                     Node document = parser.parse(sb.toString());
 
-                    return renderer.render(document);
+                    content = renderer.render(document);
+                    break;
                 case "html":
                 case "htm":
                 case "xhtm":
-                  return sb.toString();
+                    content = sb.toString();
+                    break;
             }
         }
 
-        return "";
+        parsed = true;
+
+        return content;
     }
 }

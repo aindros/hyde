@@ -24,6 +24,9 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.cli.*;
+
+import org.apache.commons.io.FileUtils;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -52,9 +55,18 @@ public class Genwebsite {
 
         XmlMapper xmlMapper = new XmlMapper();
         Website website = xmlMapper.readValue(websiteXml, Website.class);
-        website.setRootDir(websiteXml.getAbsoluteFile().getParent());
-        File outDir = Paths.get(website.getRootDir()).resolve("build").toFile();
+        // Where to build
+        String websiteDir = websiteXml.getAbsoluteFile().getParent();
+        if (website.getRootDir() == null || website.getRootDir().isEmpty()) {
+            website.setRootDir(websiteDir);
+        }
+        System.out.println("Root dir is: " + website.getRootDir());
+        File outDir = Paths.get(websiteDir).resolve("build").toFile();
         outDir.mkdirs();
+
+        for (Dir dir : website.getIncludes()) {
+            FileUtils.copyDirectory(new File(dir.getName()), Paths.get(outDir.toURI()).resolve(new File(dir.getName()).getName()).toFile());
+        }
 
         //Freemarker configuration object
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_29);
@@ -68,41 +80,84 @@ public class Genwebsite {
         try {
             for (Page page : website.getPages()) {
                 String pageTemplate = website.getTemplate();
+                List<File> files = new ArrayList<>();
 
-                if (StringUtils.isNotBlank(page.getTemplate())) {
-                    pageTemplate = page.getTemplate();
+                if (page.getIn() != null && !page.getIn().isEmpty()) {
+                    File file = new File(page.getIn());
+                    if (file.isDirectory()) {
+                        listf(page.getIn(), files);
+                    } else {
+                        files.add(new File(page.getIn()));
+                    }
                 }
 
-                //Load template from source folder
-                Template template = cfg.getTemplate(pageTemplate);
+                String pageOut = page.getOut();
 
-                // Build the data-model
-                Map<String, Object> data = new HashMap<>();
-                data.put("title", page.getTitle());
-                data.put("content", page.parse());
-                data.put(page.getId() + "Active", "class=\"active\"");
+                for (File curFile : files) {
+                    System.out.println("Processing: " + curFile.getPath());
+                    page.setIn(curFile.getPath());
+                    page.parse();
+                    if (StringUtils.isNotBlank(page.getTemplate())) {
+                        pageTemplate = page.getTemplate();
+                    }
 
-                // Console output
-                /*
-                Writer out = new OutputStreamWriter(System.out);
-                template.process(data, out);
-                out.flush();
-                 */
+                    //Load template from source folder
+                    Template template = cfg.getTemplate(pageTemplate);
 
-                File pageFile = Paths.get(outDir.getAbsolutePath()).resolve(page.getOut()).toFile();
-                pageFile.getParentFile().mkdirs();
+                    // Build the data-model
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("title", page.getTitle());
+                    data.put("date", page.getDate());
+                    System.out.println(page.getDate() + " " + page.getTitle());
+                    data.put("content", page.getContent());
+                    data.put("globals", website.getGlobals());
+                    data.put(page.getId() + "Active", "class=\"active\"");
 
-                // File output
-                Writer file = new FileWriter(pageFile);
-                template.process(data, file);
-                file.flush();
-                file.close();
+                    // Console output
+                    /*
+                    Writer out = new OutputStreamWriter(System.out);
+                    template.process(data, out);
+                    out.flush();
+                     */
+
+                    if (pageOut == null || pageOut.isEmpty()) {
+                        page.setOut(curFile.getPath().replace(".md", ".html"));
+                        System.out.println("Out dir page: " + page.getOut());
+                    }
+                    File pageFile = Paths.get(outDir.getAbsolutePath()).resolve(page.getOut()).toFile();
+                    pageFile.getParentFile().mkdirs();
+                    if (pageFile.isDirectory()) {
+                        pageFile = Paths.get(pageFile.getPath()).resolve(page.getIn()).toFile();
+                    }
+
+                    // File output
+                    Writer file = new FileWriter(pageFile);
+                    template.process(data, file);
+                    file.flush();
+                    file.close();
+                }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TemplateException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void listf(String directoryName, List<File> files) {
+        File directory = new File(directoryName);
+
+        // Get all files from a directory.
+        File[] fList = directory.listFiles();
+        if(fList != null) {
+            for (File file : fList) {
+                if (file.isFile()) {
+                    files.add(file);
+                } else if (file.isDirectory()) {
+                    listf(file.getPath(), files);
+                }
+            }
         }
     }
 }
