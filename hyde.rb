@@ -1,7 +1,8 @@
 #!/usr/local/bin/ruby
 
 require "erb"
-require 'optparse'
+require "optparse"
+require "yaml"
 
 options = {}
 OptionParser.new do |opt|
@@ -35,8 +36,17 @@ class Page
   end
 end
 
-#page = Page.new("Home", "home.html.erb")
-page = Page.new(options[:title], options[:fileName], options[:pageName])
+if(!File.exist?(options[:fileName] + '.config'))
+  puts 'Cannot find: ' + options[:fileName] + '.config'
+  exit -1
+end
+
+config = YAML.load_file(options[:fileName] + '.config')
+
+title = config['title']
+pageName = config['pageName']
+
+page = Page.new(title, options[:fileName], pageName)
 
 if options[:master] == nil
   puts page.render("master.rhtml")
