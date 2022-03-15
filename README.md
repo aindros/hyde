@@ -1,0 +1,2 @@
+hyde - Static website generator
+===============================
