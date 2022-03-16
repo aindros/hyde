@@ -1,52 +1,32 @@
 #!/usr/local/bin/ruby
 
+# A simple website generator
+# Copyright (C) 2022  Alessandro Iezzi <aiezzi AT alessandroiezzi DOT it>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 require "erb"
 require "optparse"
 require "yaml"
 require 'date'
 
-options = {}
-OptionParser.new do |opt|
-  opt.on("-f", "--file-name FILENAME", "File name of the page you want to render") {
-    |o| options[:fileName] = o
-  }
-  opt.on("-t", "--title TITLE", "Title of the rendered page") {
-    |o| options[:title] = o
-  }
-  opt.on("-m", "--master MASTER", "Master file page") {
-    |o| options[:master] = o
-  }
-  opt.on("-n", "--page-name NAME", "page name") {
-    |o| options[:pageNames] = o
-  }
-end.parse!
+require_relative 'page.rb'
+require_relative 'optparser.rb'
+
+options = optparse
 
 #puts options
-
-class Page
-  attr_reader :title
-  attr_reader :pageFileName
-  attr_reader :description
-  attr_reader :date
-  attr_reader :classes
-  attr_reader :category
-
-  def initialize title, pageFileName, pageNames, description, date, classes, category
-    @title = title
-    @pageFileName = pageFileName
-    @pageNames = pageNames
-    @description = description
-    @date = date
-    @classes = classes
-    @category = category
-  end
-
-  def render path
-    content = File.read(File.expand_path(path))
-    t = ERB.new(content)
-    t.result(binding)
-  end
-end
 
 def listarticles(path, max)
   pages = Array.new
@@ -66,13 +46,15 @@ def listarticles(path, max)
   return pages
 end
 
-if(!File.exist?(options[:fileName] + '.config') && !options[:fileName].end_with?("tmpl"))
-  puts 'Cannot find: ' + options[:fileName] + '.config'
+configfile = options[:fileName] + '.config'
+
+if(!File.exist?(configfile) && !options[:fileName].end_with?("tmpl"))
+  puts 'Cannot find configuration file: ' + configfile
   exit -1
 end
 
-if(File.exist?(options[:fileName] + '.config'))
-  config = YAML.load_file(options[:fileName] + '.config')
+if(File.exist?(configfile))
+  config = YAML.load_file(configfile)
 
   if(config != nil)
     title = config['title']
@@ -83,6 +65,8 @@ if(File.exist?(options[:fileName] + '.config'))
     category = config['category']
   end
 end
+
+puts 'Creating page'
 
 page = Page.new(title, options[:fileName], pageNames, description, nil, classes, category)
 
