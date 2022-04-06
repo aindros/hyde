@@ -1,4 +1,4 @@
-# How developers contribute to Hyde
+* How developers contribute to Hyde
 
 It's pretty simple, just fork the
 [Hyde repository](http://git.alessandroiezzi.it/hyde.git) make your changes on
@@ -6,23 +6,23 @@ a feature branch then make a `request-pull` using `-p` switch and send me the
 output to me at: `aiezzi AT alessandroiezzi PERIOD it`.
 
 Following an example.
-```
-git clone http://git.alessandroiezzi.it/hyde.git
-git remote add upstream http://git.alessandroiezzi.it/hyde.git
-git remote set-url origin your-repository-online.git
-```
+
+	git clone http://git.alessandroiezzi.it/hyde.git
+	git remote add upstream http://git.alessandroiezzi.it/hyde.git
+	git remote set-url origin your-repository-online.git
+
 Make a branch from `master`:
-```
-git checkout -b awesome-feature
-```
+
+	git checkout -b awesome-feature
+
 Make your changes. Be sure to push your work:
-```
-git push -u origin awesome-feature
-```
+
+	git push -u origin awesome-feature
+
 Then make a `request-pull`:
-```
-git request-pull -p origin/master awesome-feature
-```
+
+	git request-pull -p origin/master awesome-feature
+
 Put the output on a separate file and send me that via email.
 
 I'll wait for you!
