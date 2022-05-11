@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Defined in Makefile
+INSTALLDIR=%INSTALLDIR%
+APPNAME=%APPNAME%
+
+$INSTALLDIR/$APPNAME $@
