@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby
 
-# A simple website generator
+# A static website generator
 # Copyright (C) 2022  Alessandro Iezzi <aiezzi AT alessandroiezzi DOT it>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -24,9 +24,11 @@ require 'date'
 require_relative 'page.rb'
 require_relative 'optparser.rb'
 
-options = optparse
-
-#puts options
+=begin
+Considerations on file formats.
+  .config -- Are configurations, written in YAML
+  .tmpl   -- Are templates, they don't need configuration files
+=end
 
 def listarticles(path, max)
   pages = Array.new
@@ -46,11 +48,15 @@ def listarticles(path, max)
   return pages
 end
 
+# Parse arguments from the CLI
+options = optparse
+
+# Every file needs a config file. It is similar to the YAML block in head to files processed by gohugo or jekyll.
 configfile = options[:fileName] + '.config'
 
 if(!File.exist?(configfile) && !options[:fileName].end_with?("tmpl"))
   puts 'Cannot find configuration file: ' + configfile
-  exit -1
+  exit 1
 end
 
 if(File.exist?(configfile))
@@ -65,8 +71,6 @@ if(File.exist?(configfile))
     category = config['category']
   end
 end
-
-puts 'Creating page'
 
 page = Page.new(title, options[:fileName], pageNames, description, nil, classes, category)
 

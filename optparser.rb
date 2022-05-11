@@ -1,4 +1,4 @@
-# A simple website generator
+# A static website generator
 # Copyright (C) 2022  Alessandro Iezzi <aiezzi AT alessandroiezzi DOT it>
 #
 # This program is free software: you can redistribute it and/or modify
