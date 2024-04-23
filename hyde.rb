@@ -24,6 +24,11 @@ require 'date'
 require_relative 'page.rb'
 require_relative 'optparser.rb'
 
+class Hyde
+	def self.main
+	end
+end
+
 =begin
 Considerations on file formats.
   .config -- Are configurations, written in YAML
