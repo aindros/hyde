@@ -14,6 +14,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+class HydeOptionParser
+	def self.parse
+		options = {}
+		optionParser = OptionParser.new do |option|
+			option.on("-f", "--file-name FILENAME", "File name of the page you want to render") {
+				|o| options[:fileName] = o
+			}
+			option.on("-t", "--title TITLE", "Title of the rendered page") {
+				|o| options[:title] = o
+			}
+			option.on("-m", "--master MASTER", "Master file page") {
+				|o| options[:master] = o
+			}
+			option.on("-n", "--page-name NAME", "Page name") {
+				|o| options[:pageNames] = o
+			}
+			option.on_tail("-h", "--help", "Show this message") do
+				puts option
+				exit
+			end
+		end
+
+		if ARGV.length < 1 then
+			puts optionParser.help
+			exit 1
+		end
+
+		optionParser.parse!
+
+		return options
+	end
+end
+
 def optparse
   options = {}
   optparse = OptionParser.new do |opt|

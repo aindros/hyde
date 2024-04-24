@@ -26,8 +26,13 @@ require_relative 'optparser.rb'
 
 class Hyde
 	def self.main
+		# Parse arguments from the CLI
+		options = HydeOptionParser.parse
 	end
 end
+
+Hyde.main
+exit
 
 =begin
 Considerations on file formats.
@@ -52,9 +57,6 @@ def listarticles(path, max)
 
   return pages
 end
-
-# Parse arguments from the CLI
-options = optparse
 
 # Every file needs a config file. It is similar to the YAML block in head to files processed by gohugo or jekyll.
 configfile = options[:fileName] + '.config'
