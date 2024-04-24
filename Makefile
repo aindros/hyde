@@ -21,8 +21,8 @@ install:
 	chmod +x ${APPNAME}
 	cp -f ${SOURCES} ${INSTALLDIR}/
 	cp -f ${APPNAME} ${BINDIR}/
-	sed -i '' "s|%INSTALLDIR%|${INSTALLDIR}|" ${BINDIR}/${APPNAME}
-	sed -i '' "s|%APPNAME%|${APPNAME}.rb|" ${BINDIR}/${APPNAME}
+	${SED} "s|%INSTALLDIR%|${INSTALLDIR}|" ${BINDIR}/${APPNAME}
+	${SED} "s|%APPNAME%|${APPNAME}.rb|" ${BINDIR}/${APPNAME}
 
 clean:
 	rm -rf ${INSTALLDIR}
