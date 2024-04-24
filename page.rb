@@ -39,6 +39,25 @@ class Page
 		parseConfig(fileName + '.config')
 	end
 
+	def render
+		if (@master != nil)
+			t = ERB.new(File.read(File.expand_path(@fileName)))
+
+			masterPage = Page.new(@master)
+			masterPage.title       = @title
+			masterPage.pageNames   = @pageNames
+			masterPage.description = @description
+			masterPage.date        = @date
+			masterPage.classes     = @classes
+			masterPage.baseHref    = @baseHref
+			masterPage.content = t.result(binding)
+			masterPage.render
+		else
+			content = File.read(File.expand_path(@fileName))
+			t = ERB.new(content)
+			print t.result(binding)
+		end
+	end
 
 	def parseConfig(configFile)
 		if (File.exist?(configFile))
