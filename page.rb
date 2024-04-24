@@ -31,11 +31,13 @@ class Page
 	attr :category
 	attr :master
 	attr :baseHref
+	attr :url
 
 	def initialize(fileName, date = nil, baseHref = nil)
 		@fileName = fileName
 		@date     = date
 		@baseHref = baseHref
+		@url      = fileName.gsub(/rhtml/, 'html')
 		parseConfig(fileName + '.config')
 	end
 
@@ -55,6 +57,7 @@ class Page
 			masterPage.date        = @date
 			masterPage.classes     = @classes
 			masterPage.baseHref    = @baseHref
+			masterPage.url         = @url
 			masterPage.content = t.result(binding)
 			masterPage.render
 		else
@@ -102,6 +105,7 @@ class Page
 	attr_writer :master
 	attr_writer :content
 	attr_writer :baseHref
+	attr_writer :url
 
   def initialize1 title, pageFileName, pageNames, description, date, classes, category
     @title = title
