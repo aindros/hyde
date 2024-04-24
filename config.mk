@@ -14,22 +14,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-include config.mk
+PREFIX = /usr/local
+#PREFIX = ~
 
-install:
-	mkdir -p ${INSTALLDIR}
-	chmod +x ${APPNAME}
-	cp -f ${SOURCES} ${INSTALLDIR}/
-	cp -f ${APPNAME} ${BINDIR}/
-	sed -i '' "s|%INSTALLDIR%|${INSTALLDIR}|" ${BINDIR}/${APPNAME}
-	sed -i '' "s|%APPNAME%|${APPNAME}.rb|" ${BINDIR}/${APPNAME}
+APPNAME = hyde
+INSTALLDIR = ${PREFIX}/hyde
+BINDIR     = ${PREFIX}/bin
 
-clean:
-	rm -rf ${INSTALLDIR}
-	rm -f ${BINDIR}/${APPNAME}
+# BSD sed
+SED = sed -i ''
 
-~/bin/hyde: hyde.rb
-	cp ${.ALLSRC} ${.TARGET}
+# GNU sed
+#SED = sed -i''
 
-update-copyright:
-	scripts/update-copiright.sh
