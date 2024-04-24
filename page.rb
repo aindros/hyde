@@ -57,6 +57,7 @@ class Page
 			masterPage.date        = @date
 			masterPage.classes     = @classes
 			masterPage.baseHref    = @baseHref
+			masterPage.category    = @category
 			masterPage.url         = @url
 			masterPage.content = t.result(binding)
 			masterPage.render
