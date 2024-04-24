@@ -39,6 +39,11 @@ class Page
 		parseConfig(fileName + '.config')
 	end
 
+	def includeFile(fileName)
+		t = ERB.new(File.read(File.expand_path(fileName)))
+		return t.result(binding)
+	end
+
 	def render
 		if (@master != nil)
 			t = ERB.new(File.read(File.expand_path(@fileName)))
