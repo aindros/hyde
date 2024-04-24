@@ -27,7 +27,7 @@ class Page
   attr_reader :classes
   attr_reader :category
 
-  def initialize title, pageFileName, pageNames, description, date, classes, category
+  def initialize1 title, pageFileName, pageNames, description, date, classes, category
     @title = title
     @pageFileName = pageFileName
     @pageNames = pageNames
@@ -37,7 +37,7 @@ class Page
     @category = category
   end
 
-  def render path
+  def render1 path
     content = File.read(File.expand_path(path))
     t = ERB.new(content)
     t.result(binding)
