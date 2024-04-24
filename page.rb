@@ -20,12 +20,18 @@ require "yaml"
 require 'date'
 
 class Page
-  attr_reader :title
   attr_reader :pageFileName
-  attr_reader :description
-  attr_reader :date
-  attr_reader :classes
-  attr_reader :category
+
+	attr :fileName
+	attr :title
+	attr :pageNames
+	attr :description
+	attr :date
+	attr :classes
+	attr :category
+	attr :master
+	attr :baseHref
+
 
 	def parseConfig(configFile)
 		if (File.exist?(configFile))
