@@ -28,6 +28,7 @@ class Hyde
 	def self.main
 		# Parse arguments from the CLI
 		options = HydeOptionParser.parse
+		page = Page.new(options[:fileName], nil, options[:baseHref])
 	end
 end
 

@@ -30,6 +30,9 @@ class HydeOptionParser
 			option.on("-n", "--page-name NAME", "Page name") {
 				|o| options[:pageNames] = o
 			}
+			option.on("-b", "--base-href HREF", "The base HREF") {
+				|o| options[:baseHref] = o
+			}
 			option.on_tail("-h", "--help", "Show this message") do
 				puts option
 				exit
