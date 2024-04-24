@@ -25,6 +25,22 @@ require_relative 'page.rb'
 require_relative 'optparser.rb'
 
 class Hyde
+	def self.listarticles(path, max)
+		pages = Array.new
+		Dir.glob(path).each { |file|
+			if (file.end_with?(".rhtml") && File.file?(file))
+				date = Date.parse(file.gsub(/.*\/(.*)_.*/, '\1'))
+				pages.append(Page.new(file, date))
+				max = max - 1
+				if (max == 0)
+					break
+				end
+			end
+		}
+
+		return pages
+	end
+
 	def self.main
 		# Parse arguments from the CLI
 		options = HydeOptionParser.parse
@@ -41,23 +57,6 @@ Considerations on file formats.
   .tmpl   -- Are templates, they don't need configuration files
 =end
 
-def listarticles(path, max)
-  pages = Array.new
-  Dir.glob(path).each { |file|
-    if (file.end_with?(".rhtml") && File.file?(file))
-      config = YAML.load_file(file + '.config')
-      file["rhtml"] = "html"
-      date = Date.parse(file.gsub(/.*\/(.*)_.*/, '\1'))
-      pages.append(Page.new(config['title'], file, nil, config['description'], date, config['classes'], nil))
-      max = max - 1
-      if (max == 0)
-        break
-      end
-    end
-  }
-
-  return pages
-end
 
 # Every file needs a config file. It is similar to the YAML block in head to files processed by gohugo or jekyll.
 configfile = options[:fileName] + '.config'
