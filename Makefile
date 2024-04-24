@@ -16,6 +16,8 @@
 
 include config.mk
 
+SOURCES != find * -type f -name "*.rb"
+
 install:
 	mkdir -p ${INSTALLDIR}
 	chmod +x ${APPNAME}
