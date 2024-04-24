@@ -58,26 +58,9 @@ Considerations on file formats.
 =end
 
 
-# Every file needs a config file. It is similar to the YAML block in head to files processed by gohugo or jekyll.
-configfile = options[:fileName] + '.config'
 
-if(!File.exist?(configfile) && !options[:fileName].end_with?("tmpl"))
-  puts 'Cannot find configuration file: ' + configfile
-  exit 1
-end
 
-if(File.exist?(configfile))
-  config = YAML.load_file(configfile)
 
-  if(config != nil)
-    title = config['title']
-    pageNames = config['pageNames']
-    description = config['description']
-    classes = config['classes']
-    master = config['master']
-    category = config['category']
-  end
-end
 
 page = Page.new(title, options[:fileName], pageNames, description, nil, classes, category)
 

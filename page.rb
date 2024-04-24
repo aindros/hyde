@@ -27,6 +27,37 @@ class Page
   attr_reader :classes
   attr_reader :category
 
+	def parseConfig(configFile)
+		if (File.exist?(configFile))
+			config = YAML.load_file(configFile)
+			if (config != nil)
+				@title       = config['title']
+				@pageNames   = config['pageNames']
+				@description = config['description']
+				@classes     = config['classes']
+				@master      = config['master']
+				@category    = config['category']
+				if (@date == nil)
+					@date = config['date']
+				end
+				if (@baseHref == nil)
+					@baseHref= config['baseHref']
+				end
+			end
+		end
+	end
+
+	attr_writer :fileName
+	attr_writer :title
+	attr_writer :pageNames
+	attr_writer :description
+	attr_writer :date
+	attr_writer :classes
+	attr_writer :category
+	attr_writer :master
+	attr_writer :content
+	attr_writer :baseHref
+
   def initialize1 title, pageFileName, pageNames, description, date, classes, category
     @title = title
     @pageFileName = pageFileName
