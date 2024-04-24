@@ -64,6 +64,8 @@ class Page
 		end
 	end
 
+	private
+
 	def parseConfig(configFile)
 		if (File.exist?(configFile))
 			config = YAML.load_file(configFile)
@@ -83,6 +85,12 @@ class Page
 			end
 		end
 	end
+
+	def renderContent
+		return @content&.strip || @content
+	end
+
+	protected
 
 	attr_writer :fileName
 	attr_writer :title
