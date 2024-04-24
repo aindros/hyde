@@ -32,6 +32,13 @@ class Page
 	attr :master
 	attr :baseHref
 
+	def initialize(fileName, date = nil, baseHref = nil)
+		@fileName = fileName
+		@date     = date
+		@baseHref = baseHref
+		parseConfig(fileName + '.config')
+	end
+
 
 	def parseConfig(configFile)
 		if (File.exist?(configFile))
